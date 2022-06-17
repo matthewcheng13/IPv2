@@ -64,14 +64,11 @@ def pingable(address):
     :param address: Host name or ip address
     :return: True if pingable, false if not
     """
-    def pingOk(sHost):
-        try:
-            output = subprocess.check_output(
-                "ping -{} 1 {}".format('n' if platform.system().lower() == "windows" else 'c', sHost), shell=True)
-        except:
-            return [False]
-        return [True]
-    return pingOk(address)
+    try:
+        output = subprocess.check_output("ping -{} 1 {}".format('n' if platform.system().lower() == "windows" else 'c', address), shell=True)
+    except:
+        return [False]
+    return [True]
 
 
 def check_ports(address):
