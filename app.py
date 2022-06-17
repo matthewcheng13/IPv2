@@ -1,4 +1,6 @@
 import os
+import socket
+
 import main
 import pandas as pd
 from flask import Flask, redirect, url_for, request, jsonify, render_template, make_response
@@ -110,12 +112,12 @@ def index():
     """
     user = request.form['nm']
     addresses = user.split(',')
+    addresses = list(map(str.strip, addresses))
     valid = True
     for addr in addresses:
-        addr = addr.strip()
-        output_stream = os.popen("nslookup " + addr)
-        server_address = output_stream.read()
-        if 'Name' not in server_address:
+        try:
+            socket.gethostbyaddr(addr)
+        except:
             valid = False
 
     if valid:

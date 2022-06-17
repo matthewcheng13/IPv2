@@ -1,6 +1,7 @@
 import os
 import socket
 import csv
+import dns.resolver
 from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
 
@@ -42,21 +43,16 @@ def getNameAndAddress(ip_address):
     :param ip_address: Host name or ip address for nslookup
     :return: Host name, ip address
     """
-    output_stream = os.popen("nslookup " + ip_address)
-    server_address = output_stream.read()
-
-    if 'Name' not in server_address:
-        hostname = "No Connection / Does Not Exist"
-        output_address = ip_address
-
+    if socket.gethostbyname(ip_address) == ip_address:
+        (hostname,aliases,output_address) = socket.gethostbyaddr(ip_address)
     else:
-        if 'Addresses' in server_address:
-            substring = server_address.split('Name:')[1].split("Addresses:")
-        else:
-            substring = server_address.split('Name:')[1].split("Address:")
-        hostname = substring[0].strip().split()
-        output_address = substring[1].strip().split()
-    return ','.join(hostname), ','.join(output_address)
+        hostname = ip_address
+        output_address = []
+        resolver = dns.resolver.Resolver()
+        result = resolver.resolve(hostname)
+        for res in result:
+            output_address.append(str(res))
+    return ','.join([hostname]), ','.join(output_address)
 
 
 def pingable(address):
