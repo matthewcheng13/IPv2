@@ -7,6 +7,11 @@ from flask import Flask, redirect, url_for, request, jsonify, render_template, m
 app = Flask(__name__)
 
 
+'''
+
+'''
+
+
 @app.route('/all_info/<name>')
 def success(name):
     """
