@@ -1,9 +1,11 @@
-import os
 import socket
 import csv
 import dns.resolver
 from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
+import subprocess
+import platform
+
 
 list_of_ports = [22, 80, 443, 5000, 7878, 8080]
 
@@ -62,13 +64,14 @@ def pingable(address):
     :param address: Host name or ip address
     :return: True if pingable, false if not
     """
-    output_stream = os.popen("ping " + address)
-    ping_output = output_stream.read()
-    if "Reply from" in ping_output:
-        can_ping = True
-    else:
-        can_ping = False
-    return [can_ping]
+    def pingOk(sHost):
+        try:
+            output = subprocess.check_output(
+                "ping -{} 1 {}".format('n' if platform.system().lower() == "windows" else 'c', sHost), shell=True)
+        except:
+            return [False]
+        return [True]
+    return pingOk(address)
 
 
 def check_ports(address):
