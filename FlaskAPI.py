@@ -16,13 +16,14 @@ def success(name):
 
     :return: rendered info.html file specific for "Get All Info" button
     """
-    names = name.split(',')
+    name = name.split(',')
+    name = list(map(str.strip, name))
     global value
-    value = main.multi_thread(names, main.threadForSingleAddress)
+    value = main.multi_thread(name, main.threadForSingleAddress)
     kind = "Find All Info"
     global columns
     columns = ['Input','IP Address','Hostname','Pingable','Open Ports']
-    return render_template('info.html', name=names, value=value, kind=kind, iterate=range(len(names)), columns=columns)
+    return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
 @app.route('/ip_address_and_hostname/<name>')
@@ -34,13 +35,14 @@ def address(name):
 
     :return: rendered info.html file specific for "IP Address / Hostname" button
     """
-    names = name.split(',')
+    name = name.split(',')
+    name = list(map(str.strip, name))
     global value
-    value = main.multi_thread(names, main.getNameAndAddress)
+    value = main.multi_thread(name, main.getNameAndAddress)
     kind = 'IP Address and Hostname Lookup'
     global columns
-    columns = ['Input', 'IP Address', 'Hostname']
-    return render_template('info.html', name=names, value=value, kind=kind, iterate=range(len(names)), columns=columns)
+    columns = ['Input', 'Hostname', 'IP Address']
+    return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
 @app.route('/pingable/<name>')
@@ -52,13 +54,14 @@ def do_ping(name):
 
     :return: rendered info.html file specific for "Pingable?" button
     """
-    names = name.split(',')
+    name = name.split(',')
+    name = list(map(str.strip, name))
     global value
-    value = main.multi_thread(names, main.pingable)
+    value = main.multi_thread(name, main.pingable)
     kind = 'Check Pingability'
     global columns
     columns = ['Input','Pingable']
-    return render_template('info.html', name=names, value=value, kind=kind, iterate=range(len(names)), columns=columns)
+    return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
 @app.route('/open_ports/<name>')
@@ -70,13 +73,14 @@ def ports(name):
 
     :return: rendered info.html file specific for "Open Ports" button
     """
-    names = name.split(',')
+    name = name.split(',')
+    name = list(map(str.strip, name))
     global value
-    value = main.multi_thread(names, main.check_ports)
+    value = main.multi_thread(name, main.check_ports)
     kind = 'Check Open Ports'
     global columns
     columns = ['Input', 'Open Ports']
-    return render_template('info.html', name=names, value=value, kind=kind, iterate=range(len(names)), columns=columns)
+    return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
 @app.route('/')
@@ -100,10 +104,11 @@ def index():
     :return: URL for redirecting
     """
     user = request.form['nm']
-    addresses = user.split()
+    addresses = user.split(',')
     valid = True
-    for address in addresses:
-        output_stream = os.popen("nslookup " + address)
+    for addr in addresses:
+        addr = addr.strip()
+        output_stream = os.popen("nslookup " + addr)
         server_address = output_stream.read()
         if 'Name' not in server_address:
             valid = False

@@ -56,7 +56,7 @@ def getNameAndAddress(ip_address):
             substring = server_address.split('Name:')[1].split("Address:")
         hostname = substring[0].strip().split()
         output_address = substring[1].strip().split()
-    return hostname, output_address
+    return ','.join(hostname), ','.join(output_address)
 
 
 def pingable(address):
@@ -72,7 +72,7 @@ def pingable(address):
         can_ping = True
     else:
         can_ping = False
-    return can_ping
+    return [can_ping]
 
 
 def check_ports(address):
@@ -102,14 +102,14 @@ def threadForSingleAddress(ip_address):
     hostname, output_address = getNameAndAddress(ip_address)
 
     # check if IP is pingable
-    can_ping = pingable(ip_address)
+    can_ping = pingable(ip_address)[0]
 
     # check if port is open
     open_ports = []
     if can_ping:
         open_ports = check_ports(ip_address)
 
-    return [','.join(output_address), ','.join(hostname), can_ping, ','.join(open_ports)]
+    return [output_address, hostname, can_ping, ','.join(open_ports)]
 
 
 if __name__ == "__main__":
