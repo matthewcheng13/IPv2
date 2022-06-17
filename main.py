@@ -64,10 +64,10 @@ def pingable(address):
     :return: True if pingable, false if not
     """
     try:
-        subprocess.check_output("ping -c 1 {}".format(address), shell=True)
+        subprocess.check_output("ping -c 1 " + address, shell=True)
     except:
         try:
-            subprocess.check_output("ping -n 1 {}".format(address), shell=True)
+            subprocess.check_output("ping -n 1 " + address, shell=True)
         except:
             return [False]
     return [True]
