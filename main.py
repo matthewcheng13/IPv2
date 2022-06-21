@@ -65,11 +65,13 @@ def pingable(address):
     """
     try:
         subprocess.check_output("ping -c 1 " + address, shell=True)
-    except:
+    except subprocess.CalledProcessError:
         try:
             subprocess.check_output("ping -n 1 " + address, shell=True)
-        except:
+        except subprocess.CalledProcessError:
             return [False]
+    except:
+        print("Error")
     return [True]
 
 
