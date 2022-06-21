@@ -4,6 +4,7 @@ import dns.resolver
 from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
 import subprocess
+import os
 
 
 list_of_ports = [22, 80, 443, 5000, 7878, 8080]
@@ -63,16 +64,20 @@ def pingable(address):
     :param address: Host name or ip address
     :return: True if pingable, false if not
     """
-    try:
+    '''try:
         subprocess.check_output("ping -c 1 " + address, shell=True)
-    except subprocess.CalledProcessError:
+    except:
         try:
             subprocess.check_output("ping -n 1 " + address, shell=True)
-        except subprocess.CalledProcessError:
+        except:
             return [False]
-    except:
-        print("Error")
-    return [True]
+    return [True]'''
+    def run_os(cmd, address):
+        return os.system("ping -{} 1 {}".format(cmd,address))
+    output = run_os('c', address)
+    if output == 1:
+        output = run_os('n', address)
+    return [output == 0]
 
 
 def check_ports(address):

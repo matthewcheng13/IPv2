@@ -1,14 +1,11 @@
-import subprocess
+import os
 
 
-def ping(address):
-    try:
-        return subprocess.check_output("ping -c 1 " + address, shell=True)
-    except subprocess.CalledProcessError:
-        return "Subprocess"
-    except:
-        return "Other"
+def run_os(cmd, address):
+    return os.system("ping -{} 1 {}".format(cmd, address))
 
+address = '7.7.7.7'
+print([run_os('n',address) == 0])
+print(run_os('c',address) == 0)
 
-print(ping('7.7.7.7'))
-print(ping('google.com'))
+print(run_os('n','google.com') == 0)
