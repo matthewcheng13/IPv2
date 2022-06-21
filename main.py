@@ -3,7 +3,7 @@ import csv
 import dns.resolver
 from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
-import subprocess
+#import subprocess
 import os
 
 
