@@ -5,6 +5,7 @@ from multiprocessing.dummy import Pool
 from multiprocessing import cpu_count
 #import subprocess
 import os
+from icmplib import ping
 
 
 list_of_ports = [22, 80, 443, 5000, 7878, 8080]
@@ -72,12 +73,13 @@ def pingable(address):
         except:
             return [False]
     return [True]'''
-    def run_os(cmd, address):
+    '''def run_os(cmd, address):
         return os.system("ping -{} 1 {}".format(cmd,address))
     output = run_os('c', address)
     if output == 1:
         output = run_os('n', address)
-    return [output == 0]
+    return [output == 0]'''
+    return [ping(address, 1).is_alive]
 
 
 def check_ports(address):
