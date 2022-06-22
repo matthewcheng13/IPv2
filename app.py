@@ -1,17 +1,13 @@
-import os
 import socket
-
+import sqlite3
 import main
 import pandas as pd
 from flask import Flask, redirect, url_for, request, jsonify, render_template, make_response
 
 # create the Flask application
 app = Flask(__name__)
-
-
-'''
-
-'''
+conn = sqlite3.connect("database.db",check_same_thread=False)
+curr = conn.cursor()
 
 
 @app.route('/all_info/<name>')
@@ -30,6 +26,11 @@ def success(name):
     kind = "Find All Info"
     global columns
     columns = ['Input','IP Address','Hostname','Pingable','Open Ports']
+    for i in range(len(value)):
+        print(i)
+        addData = f"INSERT INTO IPDATA VALUES('{value[i][1]}', '{value[i][2]}', '{value[i][3]}');"
+        curr.execute(addData)
+    conn.commit()
     return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
@@ -120,6 +121,9 @@ def index():
         except:
             valid = False
 
+    if request.form.get('hist'):
+        return redirect(url_for('history'))
+
     if valid:
         if request.form.get('all'):
             return redirect(url_for('success', name=user))
@@ -186,6 +190,20 @@ def download_json():
     response.headers['Content-Disposition'] = cd
     response.mimetype = 'text/json'
     return response
+
+
+@app.route('/history')
+def history():
+    curr.execute('SELECT * FROM IPDATA')
+    display = curr.fetchall()
+    return render_template('history.html', title='My History', display=display)
+
+
+@app.route('/clear', methods=['POST'])
+def clear():
+    curr.execute('SELECT * FROM IPDATA')
+    curr.execute('DELETE FROM IPDATA')
+    return redirect(url_for('history'))
 
 
 if __name__ == '__main__':

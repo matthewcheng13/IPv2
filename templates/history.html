@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> My History </title>
+    <style>
+        #hide {
+            display: none;
+        }
+        body {
+            background-image: url('https://wallpapercave.com/wp/STvuGy5.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        input[type=submit] {
+            background-color: #3CDC8D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <font color="white">
+            <h1> My History </h1>
+            <table border=1>
+                {% for row in display %}
+                <tr>
+                    {% for item in row %}
+                    <td> {{ item }} </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+
+            <form action = "/clear" method = "POST">
+                <p><input type = "submit" name = "clear" value = "Clear History" /></p>
+            </form>
+
+                <br>
+                <p> Created by Shreya Malhotra and Matthew Cheng - Summer Interns 2022</p>
+
+        </font>
+    </center>
+</body>
+</html>
