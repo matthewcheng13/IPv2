@@ -10,6 +10,33 @@ conn = sqlite3.connect("database.db",check_same_thread=False)
 curr = conn.cursor()
 
 
+@app.route('/api_call')
+def api_call():
+    return render_template('api_call.html')
+
+
+@app.route('/call_all_info/<name>')
+def call_all_info(name):
+    """
+    Once "Get All Info" has been selected, this function redirects
+    the user to a webpage that displays all of the requested information,
+    ip address, hostname, pingability, open ports.
+
+    :return: rendered info.html file specific for "Get All Info" button
+    """
+    name = name.split(',')
+    name = list(map(str.strip, name))
+    global value
+    value = main.multi_thread(name, main.threadForSingleAddress)
+    global columns
+    columns = ['Input','IP Address','Hostname','Pingable','Open Ports']
+    response = make_response(jsonify(make_df().to_json()))
+    #cd = 'attachment; filename=download.json'
+    #response.headers['Content-Disposition'] = cd
+    #response.mimetype = 'text/json'
+    return response
+
+
 @app.route('/all_info/<name>')
 def success(name):
     """
