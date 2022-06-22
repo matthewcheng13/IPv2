@@ -10,7 +10,7 @@ conn = sqlite3.connect("database.db",check_same_thread=False)
 curr = conn.cursor()
 
 
-@app.route('/api_call')
+@app.route('/')
 def api_call():
     return render_template('api_call.html')
 
@@ -118,7 +118,7 @@ def ports(name):
     return render_template('info.html', name=name, value=value, kind=kind, iterate=range(len(name)), columns=columns)
 
 
-@app.route('/')
+#@app.route('/')
 def load_index():
     """
     Upon visiting http://127.0.0.1:5000, this will
